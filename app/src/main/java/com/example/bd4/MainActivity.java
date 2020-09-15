@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         if(f.exists()) {
             try {
                 PrintWriter writer = new PrintWriter(f);
-                writer.print("");
+                writer.print("1");
                 writer.close();
             }
             catch (IOException e)
