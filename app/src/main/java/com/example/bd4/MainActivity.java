@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void WriteLine(String name, String surname)
     {
-        String s = surname + ";" + name + ";" + "\r\n";
+        String s = surname + " " + name + "\r\n";
         try
         {
             bw.write(s);
@@ -71,7 +72,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void WriteFile(View view){
-        File f = new File(super.getFilesDir(), FILE_NAME);
+        File f = new File(getFilesDir(), FILE_NAME);
+        if(f.exists()) {
+            try {
+                PrintWriter writer = new PrintWriter(f);
+                writer.print("");
+                writer.close();
+            }
+            catch (IOException e)
+            {}
+        }
         try {
             FileWriter fw = new FileWriter(f, true);
             bw = new BufferedWriter(fw);
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILE_NAME)));
             EditText output = findViewById(R.id.editTextTextMultiLine);
+            output.setText("");
             String s = "";
             String str = "";
             while((str = br.readLine())!= null){
