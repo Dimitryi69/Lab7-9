@@ -439,7 +439,8 @@ public class ContentFragmentForList extends Fragment {
 //                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
                                         new SaveInBD().doInBackground(recipeClass);
                                     } else {
-                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
+//                                        databaseHelper.deleteRecipe(db, inputID);
+//                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
                                         new DeleteFromBD().doInBackground(inputID);
                                         new SaveInBD().doInBackground(recipeClass);
                                     }
