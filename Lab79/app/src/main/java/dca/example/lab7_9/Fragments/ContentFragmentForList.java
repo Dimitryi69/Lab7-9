@@ -251,7 +251,7 @@ public class ContentFragmentForList extends Fragment {
         }, new ListAdapter.OnCheckClickListener() {
             @Override
             public void onCheckClick(Recipe recipe, int i) {
-                databaseHelper.insertRecipe(db, recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getFoto(), i);
+                databaseHelper.insertRecipe(db, recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getPhoto(), i);
                 new DeleteFromBD().doInBackground(recipe.id);
                 recipe.setFavorite(i);
                 new SaveInBD().doInBackground(recipe);
