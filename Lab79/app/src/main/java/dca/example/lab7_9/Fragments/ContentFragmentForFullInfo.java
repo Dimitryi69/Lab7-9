@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,27 +21,8 @@ import dca.example.lab7_9.Recipe;
 public class ContentFragmentForFullInfo extends Fragment {
 
     View view;
-    Recipe recipe;
+    dca.example.lab7_9.Recipe recipe;
 
-    public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_full_info, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.item1:
-                super.getActivity().getSupportFragmentManager().popBackStack();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -58,13 +36,10 @@ public class ContentFragmentForFullInfo extends Fragment {
         Button updateButton = view.findViewById(R.id.buttonBack);
 
         updateButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(view.getContext(), MainActivity.class);
-//            startActivity(intent);
-//            ContentFragmentForFullInfo.super.getActivity().overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
-            MainActivity.fTrans = ContentFragmentForFullInfo.super.getActivity().getSupportFragmentManager().beginTransaction();
-            MainActivity.fTrans.replace(R.id.listFragment, new ContentFragmentForList());
-            MainActivity.fTrans.addToBackStack(null);
-            MainActivity.fTrans.commit();
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            startActivity(intent);
+            ContentFragmentForFullInfo.super.getActivity().overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+
         });
         updateButton.setVisibility(View.VISIBLE);
         Bundle arguments = super.getActivity().getIntent().getExtras();

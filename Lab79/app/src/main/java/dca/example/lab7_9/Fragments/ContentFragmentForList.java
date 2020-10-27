@@ -40,8 +40,6 @@ import java.util.ArrayList;
 
 import dca.example.lab7_9.DatabaseHelper;
 import dca.example.lab7_9.FullInfo;
-import dca.example.lab7_9.ListAdapter;
-import dca.example.lab7_9.MainActivity;
 import dca.example.lab7_9.R;
 import dca.example.lab7_9.Recipe;
 
@@ -139,9 +137,6 @@ public class ContentFragmentForList extends Fragment {
                 }
                 newAdapterForList();
                 return true;
-            case R.id.item5:
-                super.getActivity().getSupportFragmentManager().popBackStack();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -193,9 +188,12 @@ public class ContentFragmentForList extends Fragment {
         gridLayoutManager = new GridLayoutManager(super.getActivity(), 2);
         layoutManager = linearLayoutManager;
         recipeList = new ArrayList<>();
+
         path = super.getActivity().getFilesDir().getPath();
+
         databaseHelper = new DatabaseHelper(super.getActivity().getApplicationContext());
         db = databaseHelper.getReadableDatabase();
+
         cursor = new SelectAllFromBD().doInBackground(DatabaseHelper.TABLE_RECIPE_NAME);//cursor = db.rawQuery("select * from " + DatabaseHelper.TABLE_RECIPE_NAME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -205,53 +203,41 @@ public class ContentFragmentForList extends Fragment {
         newAdapterForList();
         contentFragmentForFullInfo = new ContentFragmentForFullInfo();
         contentFragmentForList = new dca.example.lab7_9.Fragments.ContentFragmentForList();
+
+
         return view;
     }
 
     public void newAdapterForList() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-        ListAdapter adapter = new ListAdapter(view.getContext(), recipeList, new ListAdapter.OnRecipeClickListener() {
+        dca.example.lab7_9.ListAdapter adapter = new dca.example.lab7_9.ListAdapter(view.getContext(), recipeList, new dca.example.lab7_9.ListAdapter.OnRecipeClickListener() {
             @Override
             public void onRecipeClick(Recipe recipe) {
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mListener.onFragmentInteraction(recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getPhoto());
 
                 } else {
-//                      fragmentTransaction.remove(new ContentFragmentForList());
-//                    Intent intent = new Intent(view.getContext(), FullInfo.class);
-//                    intent.putExtra("ID", recipe.getId());
-//                    intent.putExtra("D", recipe.getDescription());
-//                    intent.putExtra("F", recipe.getPhoto());
-//                    intent.putExtra("I", recipe.getIngredients());
-//                    intent.putExtra("R", recipe.getRecipe());
-//                    intent.putExtra("Time", recipe.getTime());
-//                    intent.putExtra("Title", recipe.getTitle());
-//                    intent.putExtra("Type", recipe.getType());
-//                    startActivity(intent);
-//                    dca.example.lab7_9.Fragments.ContentFragmentForList.super.getActivity().overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
 
-                    view.findViewById(R.id.listFragment);
-                    MainActivity.fTrans = ContentFragmentForList.super.getActivity().getSupportFragmentManager().beginTransaction();
-                    ContentFragmentForFullInfo fragment = new ContentFragmentForFullInfo();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("ID", recipe.getId());
-                    bundle.putString("D", recipe.getDescription());
-                    bundle.putString("F", recipe.getPhoto());
-                    bundle.putString("I", recipe.getIngredients());
-                    bundle.putString("R", recipe.getRecipe());
-                    bundle.putInt("Time", recipe.getTime());
-                    bundle.putString("Title", recipe.getTitle());
-                    bundle.putString("Type", recipe.getType());
-                    fragment.setArguments(bundle);
-                    MainActivity.fTrans.replace(R.id.listFragment, fragment);
-                    MainActivity.fTrans.addToBackStack(null);
-                    MainActivity.fTrans.commit();
+//                    fragmentTransaction.remove(new ContentFragmentForList());
+                    Intent intent = new Intent(view.getContext(), FullInfo.class);
+                    intent.putExtra("ID", recipe.getId());
+                    intent.putExtra("D", recipe.getDescription());
+                    intent.putExtra("F", recipe.getPhoto());
+                    intent.putExtra("I", recipe.getIngredients());
+                    intent.putExtra("R", recipe.getRecipe());
+                    intent.putExtra("Time", recipe.getTime());
+                    intent.putExtra("Title", recipe.getTitle());
+                    intent.putExtra("Type", recipe.getType());
+                    startActivity(intent);
+                    dca.example.lab7_9.Fragments.ContentFragmentForList.super.getActivity().overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+
                 }
+
+
             }
-        }, new ListAdapter.OnCheckClickListener() {
+        }, new dca.example.lab7_9.ListAdapter.OnCheckClickListener() {
             @Override
             public void onCheckClick(Recipe recipe, int i) {
-                databaseHelper.insertRecipe(db, recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getPhoto(), i);
                 new DeleteFromBD().doInBackground(recipe.id);
                 recipe.setFavorite(i);
                 new SaveInBD().doInBackground(recipe);
@@ -439,8 +425,7 @@ public class ContentFragmentForList extends Fragment {
 //                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
                                         new SaveInBD().doInBackground(recipeClass);
                                     } else {
-//                                        databaseHelper.deleteRecipe(db, inputID);
-//                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
+                                        databaseHelper.insertRecipe(db, id, title, type, description, recipe, ingredients, time, path + "/" + id + ":" + title + ".png", 0);
                                         new DeleteFromBD().doInBackground(inputID);
                                         new SaveInBD().doInBackground(recipeClass);
                                     }
@@ -507,7 +492,9 @@ public class ContentFragmentForList extends Fragment {
                         bitmapPhoto = BitmapFactory.decodeStream(imageStream);
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 20, stream);
+
                         photoPath = photoUri.toString();
+
                         bytesBitmap = stream.toByteArray();
                         ((ImageView) dialogView.findViewById(R.id.image)).setImageBitmap(bitmapPhoto);
                         checkPhoto = true;
@@ -519,6 +506,20 @@ public class ContentFragmentForList extends Fragment {
         }
     }
 
+//    public void saveToJSON() {
+//        Gson gson = new Gson();
+//        String jsonRecipe = gson.toJson(recipeList);
+//        FileOutputStream fileOutputStream = null;
+//        try {
+//            fileOutputStream = new FileOutputStream(new File(path, "Recipes.txt"));
+//            fileOutputStream.write(jsonRecipe.getBytes());
+//        } catch (Exception e) {
+//            dialogs(e.getMessage());
+//        }
+//
+//    }
+
+
     class SaveInBD extends AsyncTask<Recipe, Void, Void> {
         @Override
         protected Void doInBackground(Recipe... recipes) {
@@ -526,8 +527,10 @@ public class ContentFragmentForList extends Fragment {
             Recipe recipe = recipes[0];
             databaseHelper.insertRecipe(db, recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getPhoto(), recipe.isFavorite());
             return null;
+
         }
     }
+
     class DeleteFromBD extends AsyncTask<Integer, Void, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
@@ -536,6 +539,7 @@ public class ContentFragmentForList extends Fragment {
 
         }
     }
+
     class SelectAllFromBD extends AsyncTask<String, Void, Cursor> {
         @Override
         protected Cursor doInBackground(String... strings) {

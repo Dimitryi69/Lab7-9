@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        tools:context=".Activity.MainActivity">
+        tools:context="dca.example.lab7_9.Fragments.MainActivity">
 
         <fragment
             android:id="@+id/listFragment"
