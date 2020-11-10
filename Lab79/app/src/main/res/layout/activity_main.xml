@@ -11,12 +11,15 @@
         android:orientation="horizontal"
         tools:context=".MainActivity">
 
-        <fragment
+<!--        <fragment-->
+<!--            android:id="@+id/listFragment"-->
+<!--            android:name="dca.example.lab7_9.Fragments.ContentFragmentForList"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent" />-->
+        <FrameLayout
             android:id="@+id/listFragment"
-            android:name="dca.example.lab7_9.Fragments.ContentFragmentForList"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <LinearLayout
@@ -44,6 +47,7 @@
             android:text="Это выдвижная панель" />
 
     </LinearLayout>
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

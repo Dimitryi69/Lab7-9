@@ -11,17 +11,16 @@
         android:orientation="horizontal"
         tools:context="dca.example.lab7_9.Fragments.MainActivity">
 
-        <fragment
+        <FrameLayout
             android:id="@+id/listFragment"
-            android:name="dca.example.lab7_9.Fragments.ContentFragmentForList"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
-        <fragment
+        <FrameLayout
             android:id="@+id/listFragment2"
-            android:name="dca.example.lab7_9.Fragments.ContentFragmentForFullInfo"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -39,6 +38,7 @@
             android:text="Это выдвижная панель" />
 
     </LinearLayout>
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

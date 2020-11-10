@@ -40,15 +40,15 @@ import java.util.ArrayList;
 
 import dca.example.lab7_9.DatabaseHelper;
 import dca.example.lab7_9.FullInfo;
+import dca.example.lab7_9.MainActivity;
 import dca.example.lab7_9.R;
 import dca.example.lab7_9.Recipe;
 
 import static android.app.Activity.RESULT_OK;
+import static dca.example.lab7_9.MainActivity.fTrans;
 
 
 public class ContentFragmentForList extends Fragment {
-
-
     int changeManager;
     dca.example.lab7_9.Fragments.ContentFragmentForList contentFragmentForList;
     ContentFragmentForFullInfo contentFragmentForFullInfo;
@@ -215,34 +215,32 @@ public class ContentFragmentForList extends Fragment {
             public void onRecipeClick(Recipe recipe) {
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mListener.onFragmentInteraction(recipe.getId(), recipe.getTitle(), recipe.getType(), recipe.getDescription(), recipe.getRecipe(), recipe.getIngredients(), recipe.getTime(), recipe.getPhoto());
-
                 } else {
-
-//                    fragmentTransaction.remove(new ContentFragmentForList());
-                    Intent intent = new Intent(view.getContext(), FullInfo.class);
-                    intent.putExtra("ID", recipe.getId());
-                    intent.putExtra("D", recipe.getDescription());
-                    intent.putExtra("F", recipe.getPhoto());
-                    intent.putExtra("I", recipe.getIngredients());
-                    intent.putExtra("R", recipe.getRecipe());
-                    intent.putExtra("Time", recipe.getTime());
-                    intent.putExtra("Title", recipe.getTitle());
-                    intent.putExtra("Type", recipe.getType());
-                    startActivity(intent);
-                    dca.example.lab7_9.Fragments.ContentFragmentForList.super.getActivity().overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    view.findViewById(R.id.listFragment);
+                    fTrans = getActivity().getSupportFragmentManager().beginTransaction();
+                    ContentFragmentForFullInfo fragment = new ContentFragmentForFullInfo();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("ID", recipe.getId());
+                    bundle.putString("D", recipe.getDescription());
+                    bundle.putString("F", recipe.getPhoto());
+                    bundle.putString("I", recipe.getIngredients());
+                    bundle.putString("R", recipe.getRecipe());
+                    bundle.putInt("Time", recipe.getTime());
+                    bundle.putString("Title", recipe.getTitle());
+                    bundle.putString("Type", recipe.getType());
+                    fragment.setArguments(bundle);
+                    fTrans.replace(R.id.listFragment, fragment);
+                    fTrans.addToBackStack(null);
+                    fTrans.commit();
 
                 }
 
-
             }
-        }, new dca.example.lab7_9.ListAdapter.OnCheckClickListener() {
-            @Override
-            public void onCheckClick(Recipe recipe, int i) {
-                new DeleteFromBD().doInBackground(recipe.id);
-                recipe.setFavorite(i);
-                new SaveInBD().doInBackground(recipe);
+        }, (recipe, i) -> {
+            new DeleteFromBD().doInBackground(recipe.id);
+            recipe.setFavorite(i);
+            new SaveInBD().doInBackground(recipe);
 
-            }
         });
         recyclerView.setAdapter(adapter);
 
@@ -275,26 +273,18 @@ public class ContentFragmentForList extends Fragment {
         for (String p : ingredientsList) {
             CheckBox checkBox = new CheckBox(view.getContext());
             checkBox.setText(p);
-            checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CheckBox checkBoxClick = (CheckBox) view;
-                    if (checkBoxClick.isChecked()) {
-                        ingredientsChecked.add(checkBoxClick.getText().toString());
-                    } else {
-                        ingredientsChecked.remove(checkBoxClick.getText().toString());
-                    }
+            checkBox.setOnClickListener(view -> {
+                CheckBox checkBoxClick = (CheckBox) view;
+                if (checkBoxClick.isChecked()) {
+                    ingredientsChecked.add(checkBoxClick.getText().toString());
+                } else {
+                    ingredientsChecked.remove(checkBoxClick.getText().toString());
                 }
             });
             linearLayout.addView(checkBox);
         }
         Button buttonAddPhoto = dialogView.findViewById(R.id.AddPhoto);
-        buttonAddPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddPhoto();
-            }
-        });
+        buttonAddPhoto.setOnClickListener(view -> AddPhoto());
 
         if (inputID != -1) {
             Recipe recipe = null;
@@ -312,7 +302,7 @@ public class ContentFragmentForList extends Fragment {
             ((EditText) dialogView.findViewById(R.id.recipe)).setText(recipe.getRecipe());
             ((ImageView) dialogView.findViewById(R.id.image)).setImageURI(Uri.parse(recipe.getPhoto()));
             for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                CheckBox checkBox = (CheckBox) linearLayout.getChildAt(i);
+                CheckBox checkBox = (CheckBox)linearLayout.getChildAt(i);
 
                 if (recipe.getIngredients().indexOf(checkBox.getText().toString()) != -1) {
                     checkBox.setChecked(true);
@@ -492,9 +482,7 @@ public class ContentFragmentForList extends Fragment {
                         bitmapPhoto = BitmapFactory.decodeStream(imageStream);
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         bitmapPhoto.compress(Bitmap.CompressFormat.PNG, 20, stream);
-
                         photoPath = photoUri.toString();
-
                         bytesBitmap = stream.toByteArray();
                         ((ImageView) dialogView.findViewById(R.id.image)).setImageBitmap(bitmapPhoto);
                         checkPhoto = true;
